@@ -10,6 +10,6 @@ If you are close to an upgrade, even if it is going down - check how things are 
 In case the coefficient is still lower than max - you should probably prestige.
 
 Note that you should convert hours to numbers. For example:
-1:30h = 1.5
-1:24h = 1.4
-1h and 6 minutes = 1.1 as 60 min = 1h and so 6 min = 0.1
+1:30h = 1.5;
+1:24h = 1.4;
+1h and 6 minutes = 1.1 as 60 min = 1h and so 6 min = 0.1;
