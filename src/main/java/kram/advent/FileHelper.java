@@ -35,7 +35,7 @@ public class FileHelper {
     public static void writeStringToFile(String file, String text) {
         try {
             URI uri = Objects.requireNonNull(cl.getResource(file)).toURI();
-            Files.writeString(Path.of(uri), text, StandardOpenOption.APPEND);
+            Files.writeString(Path.of(uri), text, StandardOpenOption.WRITE);
         } catch (URISyntaxException | IOException e) {
             throw new RuntimeException(e);
         }

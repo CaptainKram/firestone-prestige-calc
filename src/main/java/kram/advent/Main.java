@@ -25,8 +25,8 @@ public class Main {
     private static Double GOLD_PER_HOUR = Double.parseDouble("10.0" + eMultiplier);
 
     public static void main(String[] args) {
-        calculateCoefficient();
-//        wmLevelCost(6);
+//        calculateCoefficient();
+        wmLevelCost(500, 13);
 //        personalTreeBC(50);
     }
 
@@ -58,13 +58,13 @@ public class Main {
         }
         Double coefficientOfViability = Math.pow(PRESTIGE_MULTIPLIER + 1, 1 / (HOURS_IN_THIS_RUN + ((Math.pow((FIRESTONES_WE_HAVE * PRESTIGE_MULTIPLIER) / prestigiousBonus, (1 / (Math.log(2) / Math.log(6)))) * 18000) - TOTAL_GOLD_THIS_RUN) / GOLD_PER_HOUR));
         System.out.println(coefficientOfViability);
-        FileHelper.writeStringToFile("last_coefficient", String.valueOf(coefficientOfViability) + "\n");
+        FileHelper.writeStringToFile("last_coefficient.txt", String.valueOf(coefficientOfViability) + "\n");
     }
 
     /**
     The cost to get to level X
      **/
-    private static void wmLevelCost(int level) {
+    private static void wmLevelCost(int level, int numberOfWM) {
         int screws = 20;
         int cogs = 12;
         int metal = 1;
@@ -85,12 +85,32 @@ public class Main {
         }
 
         double parts = cogs + screws + metal;
-        parts = parts * 13;
+
+        parts *= numberOfWM;
+        screws *= numberOfWM;
+        cogs *= numberOfWM;
+        metal *= numberOfWM;
+        expeditionTokens *= numberOfWM;
+
+
+        double wood = parts / 11;
         double iron = parts / 22;
         double gold = parts / 33;
-        System.out.println("Iron chests: " + iron);
-        System.out.println("Gold chests: " + gold);
+        double diamond = parts / 44;
+        double opal = parts / 55;
+        double emerald = parts / 132;
+        double platinum = parts / 264;
 
+        System.out.println("Cost when using 1 type of chests, assuming all parts go to this/those WM/s:");
+        System.out.println("Wood chests: " + wood + " ");
+        System.out.println("Iron chests: " + iron + " ");
+        System.out.println("Gold chests: " + gold + " ");
+        System.out.println("Diamond chests: " + diamond + " ");
+        System.out.println("Opal chests: " + opal + " ");
+        System.out.println("Emerald chests: " + emerald + " ");
+        System.out.println("Platinum chests: " + platinum);
+
+        System.out.println();
         System.out.println("Screws: " + screws);
         System.out.println("Cogs: " + cogs);
         System.out.println("Metal: " + metal);
