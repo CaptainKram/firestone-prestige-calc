@@ -1,5 +1,6 @@
 package kram.advent;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Main {
@@ -7,26 +8,25 @@ public class Main {
     private static Map<String, Double> prestigiousMap = Map.of(
             "Personal Tree", 2.05,
             "Firestone Research Tree 1", 0.2,
-            "Firestone Research Tree 2", 0.4,
-            "Exotic Upgrades Tree 1", 7.5e5,
-            "Thunderclap", 12.786,
-            "Solaine", 2.71,
-            "Muriel", 3.83,
-            "Valerius", 0.3
+//            "Firestone Research Tree 2", 0.4,
+            "Exotic Upgrades Tree 1", 8.6e3,
+            "Thunderclap", 1.856,
+            "Cloudfist", 1.197,
+            "Solaine", 1.2,
+            "Muriel", 1.2
+//            "Valerius", 0.3
     );
 
-    private static Double HOURS_IN_THIS_RUN = toMins("3:18");
-    private static Double PRESTIGE_MULTIPLIER = 3353.4;
+    private static String START_OF_THIS_RUN = "9:10";
+    private static String FIRESTONES_WE_HAVE = "2.09e83";
 
-    // Bigger number is for the e of total gold and gold per hour, smaller number is for the e of firestones
-    private static String eMultiplier = "e" + String.valueOf(399-160);
-    private static Double FIRESTONES_WE_HAVE = 2.11;
-    private static Double TOTAL_GOLD_THIS_RUN = Double.parseDouble("8.2" + eMultiplier);
-    private static Double GOLD_PER_HOUR = Double.parseDouble("10.0" + eMultiplier);
+    private static Double PRESTIGE_MULTIPLIER = 3353.4;
+    private static String TOTAL_GOLD = "2.3e210";
+    private static String GOLD_PER_HOUR = "4.4e210";
 
     public static void main(String[] args) {
-//        calculateCoefficient();
-        wmLevelCost(500, 13);
+        calculateCoefficient();
+//        wmLevelCost(500, 13);
 //        personalTreeBC(50);
     }
 
@@ -51,12 +51,29 @@ public class Main {
     }
 
     private static void calculateCoefficient() {
+        String timeNow = LocalDateTime.now().toString();
+        timeNow = timeNow.substring(timeNow.indexOf('T') + 1, timeNow.lastIndexOf(':'));
+        double timeNowAsDouble = toMins(timeNow);
+        double startOfThisRun = toMins(START_OF_THIS_RUN);
+        if (timeNowAsDouble < startOfThisRun) {
+            timeNowAsDouble += 24.0;
+        }
+        double hoursInThisRun = timeNowAsDouble - startOfThisRun;
+
+        int goldPerHourE = Integer.parseInt(GOLD_PER_HOUR.substring(GOLD_PER_HOUR.indexOf('e') + 1));
+        int totalGoldE = Integer.parseInt(TOTAL_GOLD.substring(TOTAL_GOLD.indexOf('e') + 1));
+        int eMultiplier = totalGoldE - Integer.parseInt(FIRESTONES_WE_HAVE.substring(FIRESTONES_WE_HAVE.indexOf('e') + 1));
+        int offset = goldPerHourE - totalGoldE + eMultiplier;
+        Double firestonesWeHave = Double.valueOf(FIRESTONES_WE_HAVE.substring(0, FIRESTONES_WE_HAVE.indexOf('e')));
+        Double totalGold = Double.valueOf(TOTAL_GOLD.substring(0, TOTAL_GOLD.indexOf('e')) + "e" + eMultiplier);
+        Double goldPerHour = Double.valueOf(GOLD_PER_HOUR.substring(0, GOLD_PER_HOUR.indexOf('e')) + "e" + offset);
+
         PRESTIGE_MULTIPLIER /= 100;
         Double prestigiousBonus = 1.0;
         for (Map.Entry<String, Double> entry : prestigiousMap.entrySet()) {
             prestigiousBonus *= 1 + entry.getValue();
         }
-        Double coefficientOfViability = Math.pow(PRESTIGE_MULTIPLIER + 1, 1 / (HOURS_IN_THIS_RUN + ((Math.pow((FIRESTONES_WE_HAVE * PRESTIGE_MULTIPLIER) / prestigiousBonus, (1 / (Math.log(2) / Math.log(6)))) * 18000) - TOTAL_GOLD_THIS_RUN) / GOLD_PER_HOUR));
+        Double coefficientOfViability = Math.pow(PRESTIGE_MULTIPLIER + 1, 1 / (hoursInThisRun + ((Math.pow((firestonesWeHave * PRESTIGE_MULTIPLIER) / prestigiousBonus, (1 / (Math.log(2) / Math.log(6)))) * 18000) - totalGold) / goldPerHour));
         System.out.println(coefficientOfViability);
         FileHelper.writeStringToFile("last_coefficient.txt", String.valueOf(coefficientOfViability) + "\n");
     }
@@ -69,15 +86,17 @@ public class Main {
         int cogs = 12;
         int metal = 1;
         int expeditionTokens = 500;
-        int xp = 100;
+        int xp = 0;
+        int cost = 100;
 
-        for (int i = 2; i < level; i++) {
-            xp += 110;
+        for (int i = 1; i < level; i++) {
+            xp += cost;
+            cost += 10;
         }
 
-        int cost = xp - 100;
-        while (cost > 0) {
-            cost -= 100;
+        int temp = xp;
+        while (temp >= 100) {
+            temp -= 100;
             screws += 20;
             cogs += 12;
             metal += 1;
@@ -116,6 +135,17 @@ public class Main {
         System.out.println("Metal: " + metal);
         System.out.println("Expedition tokens: " + expeditionTokens);
         System.out.println("XP: " + xp);
+
+        double timeInDays = expeditionTokens / tokensWithAmulets();
+        System.out.println("Time in days: " + timeInDays);
+        System.out.println("Time in years: " + (timeInDays / 365));
+    }
+
+    private static double tokensWithAmulets() {
+        double dailyTokens = 4002;
+        dailyTokens = dailyTokens * 1.05;
+        double tokensPerMission = dailyTokens / 20;
+        return tokensPerMission + dailyTokens;
     }
 
 }
