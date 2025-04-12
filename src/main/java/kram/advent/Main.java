@@ -6,23 +6,23 @@ import java.util.Map;
 public class Main {
 
     private static Map<String, Double> prestigiousMap = Map.of(
-            "Personal Tree", 2.05,
-            "Firestone Research Tree 1", 0.2,
+            "Personal Tree", 205.0,
+            "Firestone Research Tree 1", 20.0,
 //            "Firestone Research Tree 2", 0.4,
-            "Exotic Upgrades Tree 1", 8.6e3,
-            "Thunderclap", 1.856,
-            "Cloudfist", 1.197,
-            "Solaine", 1.2,
-            "Muriel", 1.2
+            "Exotic Upgrades Tree 1", 1.1e4,
+            "Thunderclap", 185.6,
+            "Cloudfist", 119.7,
+            "Solaine", 120.0,
+            "Muriel", 120.0
 //            "Valerius", 0.3
     );
 
-    private static String START_OF_THIS_RUN = "9:10";
-    private static String FIRESTONES_WE_HAVE = "2.09e83";
+    private static String START_OF_THIS_RUN = "14:45";
+    private static String FIRESTONES_WE_HAVE = "2.98e84";
 
-    private static Double PRESTIGE_MULTIPLIER = 3353.4;
-    private static String TOTAL_GOLD = "2.3e210";
-    private static String GOLD_PER_HOUR = "4.4e210";
+    private static Double PRESTIGE_MULTIPLIER = 507.5;
+    private static String TOTAL_GOLD = "8.2e212";
+    private static String GOLD_PER_HOUR = "7.2e212";
 
     public static void main(String[] args) {
         calculateCoefficient();
@@ -71,7 +71,7 @@ public class Main {
         PRESTIGE_MULTIPLIER /= 100;
         Double prestigiousBonus = 1.0;
         for (Map.Entry<String, Double> entry : prestigiousMap.entrySet()) {
-            prestigiousBonus *= 1 + entry.getValue();
+            prestigiousBonus *= 1 + (entry.getValue() / 100);
         }
         Double coefficientOfViability = Math.pow(PRESTIGE_MULTIPLIER + 1, 1 / (hoursInThisRun + ((Math.pow((firestonesWeHave * PRESTIGE_MULTIPLIER) / prestigiousBonus, (1 / (Math.log(2) / Math.log(6)))) * 18000) - totalGold) / goldPerHour));
         System.out.println(coefficientOfViability);
